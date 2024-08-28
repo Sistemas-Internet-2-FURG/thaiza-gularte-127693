@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard da Revendedora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .menu {
+            width: 250px;
+            background-color: #1e3c72;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .menu h2 {
+            margin-top: 0;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin: 15px 0;
+        }
+
+        .menu a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .content h1 {
+            margin-top: 0;
+            color: #1e3c72;
+        }
+
+        .button {
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #16335b;
+        }
+
+        .vehicle-list {
+            margin-top: 20px;
+        }
+
+        .vehicle-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vehicle-item img {
+            border-radius: 5px;
+        }
+
+        .vehicle-item .vehicle-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .vehicle-item .vehicle-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .vehicle-actions form {
+            display: inline-block;
+            margin: 0;
+        }
+
+        .vehicle-actions button {
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .vehicle-actions button:hover {
+            background-color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="menu">
+            <h2>Menu</h2>
+            <a href="#">Ver Veículos</a>
+            <a href="#">Ver Funcionários</a>
+        </div>
+        <div class="content">
+            <h1>Revendedora: {{ nome_estabelecimento }}</h1>
+            <div class="actions">
+                <a href="{{ url_for('veiculos.cadastrar_veiculo',id=id,nome_estabelecimento=nome_estabelecimento) }}" class="button">Adicionar Novo Veículo</a>
+            </div>
+            <div class="vehicle-list">
+                {% for veiculo in veiculos %}
+                    <div class="vehicle-item">
+                        <img src="{{ veiculo['imagem'] }}" alt="Imagem do carro {{ veiculo['nome'] }}" height="50px" width="70px">
+                        <span class="vehicle-info">{{ veiculo['nome'] }} - {{ veiculo['marca'] }}/{{ veiculo['modelo'] }} - {{ veiculo['valor'] }}</span>
+                        <div class="vehicle-actions">
+                            <a href="{{ url_for('veiculos.editar_deletar', id=veiculo['id']) }}" class="button">Editar</a>
+                            <form action="{{ url_for('veiculos.editar_deletar', id=veiculo['id']) }}" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Deletar</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

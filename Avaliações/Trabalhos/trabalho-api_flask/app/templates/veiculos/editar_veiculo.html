@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Veículo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .edit-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            box-sizing: border-box;
+        }
+
+        .edit-container h1 {
+            margin-top: 0;
+            color: #1e3c72;
+            text-align: center;
+        }
+
+        .edit-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333333;
+        }
+
+        .edit-container input[type="text"],
+        .edit-container input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #cccccc;
+            box-sizing: border-box;
+        }
+
+        .edit-container input[type="text"]:focus,
+        .edit-container input[type="number"]:focus {
+            border-color: #1e3c72;
+            outline: none;
+        }
+
+        .edit-container input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .edit-container input[type="submit"]:hover {
+            background-color: #16335b;
+        }
+
+        .edit-container a {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #1e3c72;
+            text-decoration: none;
+        }
+
+        .edit-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h1>Editar Veículo</h1>
+        <form action="{{ url_for('veiculos.editar_deletar', id=veiculo['id']) }}" method="POST">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" value="{{ veiculo['nome'] }}" required>
+
+            <label for="marca">Marca</label>
+            <input type="text" id="marca" name="marca" value="{{ veiculo['marca'] }}" required>
+
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" name="modelo" value="{{ veiculo['modelo'] }}" required>
+
+            <label for="valor">Valor</label>
+            <input type="text" id="valor" name="valor" value="{{ veiculo['valor'] }}" required>
+
+            <label for="imagem">Imagem (URL)</label>
+            <input type="text" id="imagem" name="imagem" value="{{ veiculo['imagem'] }}" required>
+
+            <input type="hidden" name="_method" value="PUT">
+            <input type="submit" value="Salvar Alterações">
+        </form>
+       
+    </div>
+</body>
+</html>
