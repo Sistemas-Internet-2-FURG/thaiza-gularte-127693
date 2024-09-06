@@ -139,8 +139,8 @@
                         <img src="{{ veiculo['imagem'] }}" alt="Imagem do carro {{ veiculo['nome'] }}" height="50px" width="70px">
                         <span class="vehicle-info">{{ veiculo['nome'] }} - {{ veiculo['marca'] }}/{{ veiculo['modelo'] }} - {{ veiculo['valor'] }}</span>
                         <div class="vehicle-actions">
-                            <a href="{{ url_for('veiculos.editar_deletar', id=veiculo['id']) }}" class="button">Editar</a>
-                            <form action="{{ url_for('veiculos.editar_deletar', id=veiculo['id']) }}" method="POST">
+                            <a href="{{ url_for('veiculos.editar_deletar', id=veiculo['id'], id_usuario=id,nome=nome_estabelecimento) }}" class="button">Editar</a>
+                            <form action="{{ url_for('veiculos.editar_deletar', id=veiculo['id'], id_usuario=id, nome=nome_estabelecimento) }}" method="POST">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit">Deletar</button>
                             </form>

@@ -25,7 +25,7 @@ def cadastrar_veiculo(id,nome_estabelecimento):
             print(f"Erro ao inserir os dados: {e}")
         finally:
             conn.close()
-            return 'Veiculo adicionado com sucesso'
+            return  render_template('veiculos/aviso_sucesso.html', id= id, nome_estabelecimento=nome_estabelecimento)
 
     elif request.method == 'GET':
         return render_template('veiculos/criar_veiculo.html',id=id,nome_estabelecimento=nome_estabelecimento)
@@ -62,8 +62,8 @@ def buscar_veiculos(id):
     finally:
         conn.close()
 
-@veiculos_bp.route('/<int:id>', methods=['POST', 'GET'])
-def editar_deletar(id):
+@veiculos_bp.route('/<int:id>/<int:id_usuario>/<string:nome>', methods=['POST', 'GET'])
+def editar_deletar(id, id_usuario,nome):
     conn = sqlite3.connect('db_api_flask.db')
     cursor = conn.cursor()
 
@@ -83,7 +83,7 @@ def editar_deletar(id):
                 'valor': veiculo[4],
                 'imagem': veiculo[5]
             }
-            return render_template('veiculos/editar_veiculo.html', veiculo=veiculo_dict)
+            return render_template('veiculos/editar_veiculo.html', veiculo=veiculo_dict, id=id_usuario, nome=nome)
         else:
             return "Veículo não encontrado", 404
 
@@ -103,7 +103,7 @@ def editar_deletar(id):
                     UPDATE veiculos SET nome = ?, marca = ?, modelo = ?, valor = ?, imagem = ? WHERE id = ?
                 ''', (nome, marca, modelo, valor, imagem, id))
                 conn.commit()
-                return redirect(url_for('revendedoras.acessar_cadastro'))
+                return redirect(url_for('revendedoras.revendedora_logada',id=id_usuario, nome_estabelecimento=nome))
             except sqlite3.Error as e:
                 print(f"Erro ao atualizar o veículo: {e}")
                 return "Erro ao atualizar o veículo", 500
@@ -116,7 +116,7 @@ def editar_deletar(id):
                     DELETE FROM veiculos WHERE id = ?
                 ''', (id,))
                 conn.commit()
-                return redirect(url_for('revendedoras.acessar_cadastro'))
+                return redirect(url_for('revendedoras.revendedora_logada',id=id_usuario, nome_estabelecimento=nome))
             except sqlite3.Error as e:
                 print(f"Erro ao deletar o veículo: {e}")
                 return "Erro ao deletar o veículo", 500
