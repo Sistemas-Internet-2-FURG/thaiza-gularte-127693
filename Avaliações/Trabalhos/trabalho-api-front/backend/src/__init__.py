@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 from db.database import criar_banco_de_dados
 #Cria o app flask e onde fica definido as rotas inicias tbm
-def create_app(config_class='config.Config'):
+def create_app():
+    
     app = Flask(__name__)
-    app.config.from_object(config_class)
-
+    CORS(app) 
+    
     from .routes.usuarios_router import usuarios_bp
     from .routes.livros_router import livros_bp
 

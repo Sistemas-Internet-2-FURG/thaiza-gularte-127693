@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, render_template, request, redirect, url_fo
 usuarios_bp = Blueprint('usuarios', __name__, template_folder='templates')
 
 
-@usuarios_bp.route('/home', method=['POST'])
+@usuarios_bp.route('/home', methods=['POST'])
 def acessar_login():
     email = request.form['email']
     senha = request.form['senha']
