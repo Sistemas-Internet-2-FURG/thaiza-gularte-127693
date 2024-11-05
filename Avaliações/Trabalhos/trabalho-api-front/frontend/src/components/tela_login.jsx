@@ -1,21 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom'
+import { login } from '../controllers/usuarios_controllers';
 
 function Login() {
+
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+
   const navigate = useNavigate()
+  const realizar_login = async (e) => {
+    e.preventDefault();
+
+    try {
+        const response = await login(email, senha);
+
+        console.log('Resposta da API:', response);
+
+        if (response.code === 200) {
+            console.log('Login realizado com sucesso');
+            localStorage.setItem('DadosUsuario', JSON.stringify(response.dados));
+            navigate('/home'); // Redireciona para a tela principal após o login
+        } else {
+            console.log('Erro no login:', response.msg || "Erro desconhecido");
+        }
+    } catch (error) {
+        console.error('Erro no login:', error);
+        console.log('Ocorreu um erro ao tentar acessar o cadastro.');
+    }
+};
   return (
     <div style={styles.body}>
       <div style={styles.card}>
         <h3 style={styles.title}>Login</h3>
-        <form>
+        <form onSubmit={realizar_login}>
           <div style={styles.formGroup}>
             <label htmlFor="email" style={styles.label}>Email</label>
-            <input type="email" id="email" placeholder="Digite seu email" style={styles.input} />
+            <input type="email" id="email" placeholder="Digite seu email" style={styles.input} onChange={(e) => setEmail(e.target.value)} />
           </div>
 
           <div style={styles.formGroup}>
             <label htmlFor="senha" style={styles.label}>Senha</label>
-            <input type="password" id="senha" placeholder="Digite sua senha" style={styles.input} />
+            <input type="password" id="senha" placeholder="Digite sua senha" style={styles.input} onChange={(e) => setSenha(e.target.value)}/>
           </div>
 
           <button type="submit" style={styles.btnSubmit}>Entrar</button>

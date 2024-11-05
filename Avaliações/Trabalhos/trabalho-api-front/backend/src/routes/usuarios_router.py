@@ -18,15 +18,15 @@ def acessar_login():
         ''', (email, senha))
         usuario = cursor.fetchone()
         if usuario:
-            return jsonify({'code': 200, 'msg': 'Usuario está cadastrado', 'dados': usuario})
+            response = jsonify({'code': 200, 'msg': 'Usuario está cadastrado', 'dados': usuario})
         else:
-            return jsonify({'code': 401, 'msg': 'Email ou senha inválidos'})
+            response = jsonify({'code': 401, 'msg': 'Email ou senha inválidos'})
     except sqlite3.Error as e:
         print(f"Erro ao acessar o banco de dados: {e}")
-        return jsonify({'code': 500, 'msg': 'Erro ao acessar banco'})
+        response = jsonify({'code': 500, 'msg': 'Erro ao acessar banco'})
     finally:
         conn.close()
-        return
+    return response
 
 @usuarios_bp.route('/criar', methods=['POST'])
 def cadastrar_usuario():
@@ -41,17 +41,20 @@ def cadastrar_usuario():
     try:
         cursor.execute('''
             INSERT INTO usuarios (nome, email, senha)
-            VALUES (?, ?, ?, ?)
+            VALUES (?, ?, ?)
         ''', (nome, email, senha))
         conn.commit() 
-        return jsonify({'code':200, 'msg': 'Usuario criado'})
-
+        response = jsonify({'code': 200, 'msg': 'Usuario criado'})
+    
     except sqlite3.Error as e:
         print(f"Erro ao inserir os dados: {e}")
-        return jsonify({'code':401, 'msg': 'Erro ao criar usuário'})
+        response = jsonify({'code': 401, 'msg': 'Erro ao criar usuário'})
+    
     finally:
-        conn.close()
-        return
+        conn.close()  # Fechando a conexão, mas sem retorno no `finally`
+
+    return response  # Retornando a resposta ao final da função
+
 
 @usuarios_bp.route('/buscar', methods=['GET'])
 def buscar_usuarios():

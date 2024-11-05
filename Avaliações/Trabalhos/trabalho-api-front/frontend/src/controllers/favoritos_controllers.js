@@ -1,39 +1,48 @@
-import {BASE_API} from '../resources/api'
-import axios from 'axios'
+async function favoritar(id_livro, id_usuario) {
+    try {
+        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY VAI DEMONIOOOOOOOOO')
+        const formData = new FormData();
+        formData.append("usuario_id", id_usuario);  // Use o nome correto
+        formData.append("livro_id", id_livro);  // Use o nome correto
+        const response = await fetch(`http://127.0.0.1:5000/favoritos/criar`, {
+            method: "POST",
+            body: formData,
+        });
 
+        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY terminou', response)
 
-async function favoritar(id_livro,id_usuario) {
-    try{
-        const response = await axios.post(`${BASE_API}/usuarios/criar`, {
-            id_usuario: id_usuario,
-            id_livro:id_livro
-        })
+        const data = await response.json();  // Converta a resposta para JSON
+        return data.code;  // Retorne o código da resposta
 
-        return response.code
-
-    }catch(error){
-        console.log('Erro no cadastro do usuario: ', error)
+    } catch (error) {
+        console.log('Erro ao favoritar o livro: ', error);
     }
 }
 
 async function buscar_favoritos() {
-    try{
-        const response = await axios.get(`${BASE_API}/favoritos/buscar`)
-        return response
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/favoritos/buscar`, {
+            method: "GET",
+        });
+        const data = await response.json();  // Converta a resposta para JSON
+        return data;  // Retorne os dados dos favoritos
 
-    }catch(error){
-        console.log('Erro no cadastro do usuario: ', error)
+    } catch (error) {
+        console.log('Erro ao buscar os favoritos: ', error);
     }
 }
 
 async function buscar_favorito_id(id) {
-    try{
-        const response = await axios.get(`${BASE_API}/favoritos/buscar:${id}`)
-        return response
+    try { 
+        const response = await fetch(`http://127.0.0.1:5000/favoritos/buscar/${id}`, {  // Corrigido para buscar pelo ID
+            method: "GET",
+        });
+        const data = await response.json();  // Converta a resposta para JSON
+        return data;  // Retorne os dados
 
-    }catch(error){
-        console.log('Erro no cadastro do usuario: ', error)
+    } catch (error) {
+        console.log('Erro ao buscar o favorito: ', error);
     }
 }
 
-export default {favoritar, buscar_favorito_id, buscar_favoritos}
+export {favoritar, buscar_favorito_id,buscar_favoritos}
