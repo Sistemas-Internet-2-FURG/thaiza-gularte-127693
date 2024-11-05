@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela Inicial - Aplicativo de Leitura</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212; /* Cor de fundo escura */
+            color: #ffffff; /* Texto branco */
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #6a1b9a; /* Roxo escuro */
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .book-list {
+            flex: 2; /* A lista de livros ocupará mais espaço */
+            margin-right: 20px;
+        }
+
+        .favorites {
+            background-color: #3f51b5; /* Azul escuro */
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .comments {
+            background-color: #3f51b5; /* Azul escuro */
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #ffffff; /* Título em branco */
+        }
+
+        ul {
+            list-style-type: none; /* Remove a bolinha da lista */
+            padding: 0;
+        }
+
+        li {
+            background-color: #4caf50; /* Verde */
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bem-vindo, [Nome do Usuário]</h1>
+</header>
+
+<div class="container">
+    <div class="book-list">
+        <h2>Lista de Livros</h2>
+        <ul>
+            <li>Livro 1</li>
+            <li>Livro 2</li>
+            <li>Livro 3</li>
+            <li>Livro 4</li>
+            <li>Livro 5</li>
+        </ul>
+    </div>
+
+    <div>
+        <div class="favorites">
+            <h2>Livros Favoritos</h2>
+            <ul>
+                <li>Livro Favorito 1</li>
+                <li>Livro Favorito 2</li>
+            </ul>
+        </div>
+
+        <div class="comments">
+            <h2>Comentários</h2>
+            <p>Este é um espaço para comentários sobre os livros.</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
