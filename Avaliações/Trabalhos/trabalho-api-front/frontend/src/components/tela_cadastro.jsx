@@ -9,16 +9,6 @@ function Cadastro() {
   const [senha, setSenha] = useState('')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const usuario = JSON.parse(localStorage.getItem('DadosUsuario'));
-  
-    if (!usuario) {
-        navigate('/login');
-    }else{
-      navigate('/home')
-    }
-}, [navigate])
-
   const cadastrar_usuario = async (e) => {
     e.preventDefault(); // Impede o reload da página ao submeter o form
     console.log('Iniciando cadastro do usuário...');
