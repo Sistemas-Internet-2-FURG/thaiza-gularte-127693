@@ -1,5 +1,13 @@
 import sqlite3
-from flask import Blueprint, jsonify, render_template, request, redirect, url_for
+import string
+import jwt
+import datetime
+from flask import Blueprint, jsonify, request, current_app
+import random
+# Defina a chave secreta (use uma variável de ambiente em produção)
+gen = string.ascii_letters + string.digits + string.ascii_uppercase
+key = ''.join(random.choice(gen) for i in range(12))
+SECRET_KEY = key
 
 usuarios_bp = Blueprint('usuarios', __name__, template_folder='templates')
 
@@ -17,15 +25,31 @@ def acessar_login():
             SELECT * FROM usuarios WHERE email = ? AND senha = ?
         ''', (email, senha))
         usuario = cursor.fetchone()
+        
         if usuario:
-            response = jsonify({'code': 200, 'msg': 'Usuario está cadastrado', 'dados': usuario})
+            # Gera o token JWT se o usuário for autenticado
+            payload = {
+                'id': usuario[0],  # Suponha que o ID do usuário esteja na primeira coluna
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Token expira em 1 hora
+            }
+            token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+            response = jsonify({
+                'code': 200, 
+                'msg': 'Usuario autenticado', 
+                'dados':usuario,
+                'token': token
+            })
         else:
             response = jsonify({'code': 401, 'msg': 'Email ou senha inválidos'})
+    
     except sqlite3.Error as e:
         print(f"Erro ao acessar o banco de dados: {e}")
         response = jsonify({'code': 500, 'msg': 'Erro ao acessar banco'})
+    
     finally:
         conn.close()
+
     return response
 
 @usuarios_bp.route('/criar', methods=['POST'])

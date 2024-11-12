@@ -27,7 +27,6 @@ def criar_banco_de_dados(db_name='db_letter.db'):
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 usuario_id INTEGER,
                 livro_id INTEGER,
-                PRIMARY KEY (usuario_id, livro_id),
                 FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
                 FOREIGN KEY (livro_id) REFERENCES livros(id)
             )''')

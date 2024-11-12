@@ -1,6 +1,5 @@
 async function favoritar(id_livro, id_usuario) {
     try {
-        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY VAI DEMONIOOOOOOOOO')
         const formData = new FormData();
         formData.append("usuario_id", id_usuario);  // Use o nome correto
         formData.append("livro_id", id_livro);  // Use o nome correto
@@ -8,8 +7,6 @@ async function favoritar(id_livro, id_usuario) {
             method: "POST",
             body: formData,
         });
-
-        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY terminou', response)
 
         const data = await response.json();  // Converta a resposta para JSON
         return data.code;  // Retorne o código da resposta

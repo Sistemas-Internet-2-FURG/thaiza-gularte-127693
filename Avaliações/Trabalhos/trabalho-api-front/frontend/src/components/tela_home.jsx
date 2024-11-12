@@ -15,10 +15,12 @@ function TelaInicial() {
     const [commentText, setCommentText] = useState('');
     
     useEffect(() => {
-      const us = JSON.parse(localStorage.getItem('DadosUsuario'));
+      const us = JSON.parse(localStorage.getItem('usuario'));
       setUsuario(us)
-      if (!us) {
-          navigate('/login');
+      const token = localStorage.getItem('token')
+      if (!token) {
+        localStorage.clear()
+        navigate('/login');
       } else {
           pegar_dados_banco(); 
       }
@@ -31,7 +33,7 @@ function TelaInicial() {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    const comentar = await comentario_feito(usuario[1], currentBookId, commentText)
+    await comentario_feito(usuario[1], currentBookId, commentText)
     setCommentText('');
     setShowCommentPopup(false);
   };
@@ -63,6 +65,7 @@ function TelaInicial() {
               titulo: livro.data.dados[1]
             })
           })
+          
           setFavoritos(favs)
       } else {
           console.error('Erro ao listar favoritos:', favoritos)

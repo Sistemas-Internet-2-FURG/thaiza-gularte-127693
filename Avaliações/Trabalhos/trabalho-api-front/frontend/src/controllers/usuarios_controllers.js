@@ -33,6 +33,7 @@ async function login(email, senha) {
             body: formData,
         });
 
+        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYY', response)
         // Checa se a resposta foi bem-sucedida no nível HTTP
         if (!response.ok) {
             throw new Error('Erro ao fazer login: ' + response.statusText);
@@ -43,7 +44,8 @@ async function login(email, senha) {
 
         // Verifica o código de resposta dentro do JSON retornado
         if (data.code === 200) {
-            localStorage.setItem('usuario', JSON.stringify(data.dados));
+            localStorage.setItem('usuario', JSON.stringify(data.dados))
+            localStorage.setItem('token', JSON.stringify(data.token));
         }
 
         return data;
