@@ -17,15 +17,14 @@ function Login() {
         console.log('Resposta da API:', response);
 
         if (response.code === 200) {
-            console.log('Login realizado com sucesso');
-            localStorage.setItem('DadosUsuario', JSON.stringify(response.dados));
-            navigate('/home'); // Redireciona para a tela principal após o login
+            console.log('Login realizado com sucesso')
+            navigate('/home')
         } else {
-            console.log('Erro no login:', response.msg || "Erro desconhecido");
+            console.log('Erro no login:', response.msg || "Erro desconhecido")
         }
     } catch (error) {
         console.error('Erro no login:', error);
-        console.log('Ocorreu um erro ao tentar acessar o cadastro.');
+        console.log('Ocorreu um erro ao tentar acessar o cadastro.')
     }
 };
   return (

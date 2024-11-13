@@ -21,6 +21,24 @@ async function cadastrar(nome, email, senha) {
     }
 }
 
+async function home(token) {
+    try {
+        const response = await fetch(`${BASE_API}/usuarios/home`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`, // Envia o token no cabeçalho como Bearer
+            },
+        });
+
+        // Retorna o objeto `response` completo para análise no código principal
+        return response.status
+
+    } catch (error) {
+        console.log('Erro ao verificar o token: ', error);
+        throw error;  // Lança o erro para ser capturado na função chamadora
+    }
+}
+
 
 async function login(email, senha) {
     try {
@@ -28,12 +46,11 @@ async function login(email, senha) {
         formData.append("email", email);
         formData.append("senha", senha);
 
-        const response = await fetch(`${BASE_API}/usuarios/home`, {
+        const response = await fetch(`${BASE_API}/usuarios/login`, {
             method: "POST",
             body: formData,
         });
 
-        console.log('AUBREYYYYYYYYYYYYYYYYYYYYYYYYY', response)
         // Checa se a resposta foi bem-sucedida no nível HTTP
         if (!response.ok) {
             throw new Error('Erro ao fazer login: ' + response.statusText);
@@ -75,4 +92,4 @@ async function buscar_usuario_id(id) {
     }
 }
 
-export {cadastrar,login, buscar_usuarios, buscar_usuario_id}
+export {cadastrar,home, login, buscar_usuarios, buscar_usuario_id}

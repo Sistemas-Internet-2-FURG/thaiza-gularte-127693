@@ -4,6 +4,7 @@ import jwt
 import datetime
 from flask import Blueprint, jsonify, request, current_app
 import random
+
 # Defina a chave secreta (use uma variável de ambiente em produção)
 gen = string.ascii_letters + string.digits + string.ascii_uppercase
 key = ''.join(random.choice(gen) for i in range(12))
@@ -11,8 +12,27 @@ SECRET_KEY = key
 
 usuarios_bp = Blueprint('usuarios', __name__, template_folder='templates')
 
+@usuarios_bp.route('/home', methods=['GET'])
+def acessar_home():
+    token = None
+    if 'Authorization' in request.headers:
+        auth_header = request.headers['Authorization']
+        token = auth_header.split(" ")[1]  # Extrai o token após 'Bearer '
 
-@usuarios_bp.route('/home', methods=['POST'])
+    if not token:
+        return jsonify({'status': 404, 'message': 'Token ausente!'})
+
+    try:
+        # Tenta decodificar o token
+        jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        return jsonify({'status': 200, 'message': 'Token válido'})
+    except jwt.ExpiredSignatureError:
+        return jsonify({'status': 404, 'message': 'Token expirado!'})
+    except jwt.InvalidTokenError:
+        return jsonify({'status': 404, 'message': 'Token inválido!'})
+    
+
+@usuarios_bp.route('/login', methods=['POST'])
 def acessar_login():
     email = request.form['email']
     senha = request.form['senha']

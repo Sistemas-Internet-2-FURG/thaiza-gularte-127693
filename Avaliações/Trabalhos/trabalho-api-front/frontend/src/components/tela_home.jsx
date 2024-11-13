@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {buscar_livros, buscar_livro_id} from '../controllers/livros_controllers'
 import {favoritar, buscar_favoritos} from '../controllers/favoritos_controllers'
 import {comentario_feito, buscar_comentarios} from '../controllers/comentarios_controllers'
+import { home } from '../controllers/usuarios_controllers'
 
 function TelaInicial() {
     const navigate = useNavigate()
@@ -14,15 +15,29 @@ function TelaInicial() {
     const [currentBookId, setCurrentBookId] = useState(null);
     const [commentText, setCommentText] = useState('');
     
+
+    async function verificarToken(token) {
+      const token_valido = await home(token)
+
+      if(token_valido.status === 200){
+        return true
+      } else {
+        return false
+      }
+    }
+
     useEffect(() => {
       const us = JSON.parse(localStorage.getItem('usuario'));
       setUsuario(us)
       const token = localStorage.getItem('token')
-      if (!token) {
+      const tokenValido = verificarToken(token)
+      if (tokenValido) {
+        console.log('Token está valido!!')
+        pegar_dados_banco()
+      } else {
+        console.log('Token invalido/expirado! Mnada de volta pro login.')
         localStorage.clear()
         navigate('/login');
-      } else {
-          pegar_dados_banco(); 
       }
   }, [navigate]);
 

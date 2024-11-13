@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom'
 import {cadastrar} from '../controllers/usuarios_controllers'
+import {home} from '../controllers/usuarios_controllers'
 
 function Cadastro() {
 
@@ -8,6 +9,29 @@ function Cadastro() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const navigate = useNavigate()
+
+  async function verificarToken(token) {
+    const token_valido = await home(token)
+
+    if(token_valido.status === 200){
+      return true
+    } else {
+      return false
+    }
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const tokenValido = verificarToken(token)
+    if (tokenValido) {
+      console.log('Token está valido!!')
+      navigate('/home')
+    } else {
+      console.log('Token invalido/expirado! Mnada de volta pro login.')
+      localStorage.clear()
+      navigate('/login');
+    }
+}, [navigate]);
 
   const cadastrar_usuario = async (e) => {
     e.preventDefault(); // Impede o reload da página ao submeter o form
