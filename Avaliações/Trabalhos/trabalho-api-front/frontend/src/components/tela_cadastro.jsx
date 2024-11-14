@@ -23,13 +23,13 @@ function Cadastro() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     const tokenValido = verificarToken(token)
-    if (tokenValido) {
+    if (tokenValido === true) {
       console.log('Token está valido!!')
       navigate('/home')
     } else {
       console.log('Token invalido/expirado! Mnada de volta pro login.')
       localStorage.clear()
-      navigate('/login');
+      navigate('/');
     }
 }, [navigate]);
 

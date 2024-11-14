@@ -4,6 +4,7 @@ import {buscar_livros, buscar_livro_id} from '../controllers/livros_controllers'
 import {favoritar, buscar_favoritos} from '../controllers/favoritos_controllers'
 import {comentario_feito, buscar_comentarios} from '../controllers/comentarios_controllers'
 import { home } from '../controllers/usuarios_controllers'
+import HeartJump from '../components/favortira_coracao'; // Importe o componente HeartJump
 
 function TelaInicial() {
     const navigate = useNavigate()
@@ -30,7 +31,8 @@ function TelaInicial() {
       const us = JSON.parse(localStorage.getItem('usuario'));
       setUsuario(us)
       const token = localStorage.getItem('token')
-      const tokenValido = verificarToken(token)
+      if(token){
+         const tokenValido = verificarToken(token)
       if (tokenValido) {
         console.log('Token está valido!!')
         pegar_dados_banco()
@@ -39,6 +41,10 @@ function TelaInicial() {
         localStorage.clear()
         navigate('/login');
       }
+      }else{
+        navigate('/login')
+      }
+     
   }, [navigate]);
 
   const handleCommentClick = (livroId) => {
@@ -51,8 +57,14 @@ function TelaInicial() {
     await comentario_feito(usuario[1], currentBookId, commentText)
     setCommentText('');
     setShowCommentPopup(false);
+    window.location.reload()
   };
 
+  const sair = () => {
+    localStorage.clear(
+    navigate('/login')
+    )
+  }
 
 
   const pegar_dados_banco = async () => {
@@ -70,32 +82,43 @@ function TelaInicial() {
           console.error('Erro ao listar coms:', coms)
       }
 
-      const favoritos = await buscar_favoritos()
-      const favs = []
-      if (favoritos && favoritos.code === 200) { 
-          favoritos.dados.map(async (fav) => {
-            const livro = await buscar_livro_id(fav.livro_id);
-            favs.push({
-              usuario: fav.usuario_id,
-              titulo: livro.data.dados[1]
+      const favoritosResponse = await buscar_favoritos();
+      if (favoritosResponse && favoritosResponse.code === 200) {
+        try {
+          // Usando `Promise.all` para buscar os detalhes de cada livro favorito em paralelo
+          const favs = await Promise.all(
+            favoritosResponse.dados.map(async (fav) => {
+              const livroResponse = await buscar_livro_id(fav.usuario_id);
+              return {
+                usuario: fav.livro_id,
+                titulo: livroResponse.data.dados[1],
+              };
             })
-          })
-          
-          setFavoritos(favs)
+          );
+          setFavoritos(favs); // Atualiza o estado com a lista completa de favoritos
+        } catch (error) {
+          console.error('Erro ao buscar detalhes dos favoritos:', error);
+        }
       } else {
-          console.error('Erro ao listar favoritos:', favoritos)
+        console.error('Erro ao listar favoritos:', favoritosResponse);
       }
 
   };
 
+  const [showHeart, setShowHeart] = useState(false);
 
+  // Função que remove o coração após a animação
+  const handleHeartAnimationEnd = () => {
+    setShowHeart(false);
+  };
 
   return (
     <div style={styles.body}>
       <header style={styles.header}>
-        <h1>Bem-vindo, {usuario[1]}</h1>
+        <h1 style={styles.title}>Bem-vindo, {usuario[1]}</h1>
+        <button style={styles.buttonLogout} onClick={sair}>Sair</button>
       </header>
-
+    
       <div style={styles.container}>
         <div style={styles.bookList}>
           <h2>Lista de Livros</h2>
@@ -113,7 +136,14 @@ function TelaInicial() {
                   </button>
 
                   <button 
-                    onClick={() => {favoritar(livro.id, usuario[0])}} 
+                    onClick={() => {
+                      favoritar(livro.id, usuario[0]).then((r) => {
+                        if(r === 200){
+                          setShowHeart(true)
+                          pegar_dados_banco()
+                        }
+                      })
+                    }} 
                     style={styles.favoritarButton}
                   >
                     Favoritar
@@ -171,6 +201,10 @@ function TelaInicial() {
           </div>
         </div>
       )}
+
+    {showHeart && <HeartJump onAnimationEnd={handleHeartAnimationEnd} />} {/* Renderiza o coração apenas se showHeart for true */}
+
+
     </div>
   );
 };
@@ -186,8 +220,10 @@ const styles = {
   },
   header: {
     backgroundColor: '#6a1b9a',
-    padding: '20px',
-    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'space-between', // Empurra o conteúdo para os extremos
+    alignItems: 'center',            // Alinha verticalmente no centro
+    padding: '30px',
   },
   container: {
     display: 'flex',
@@ -220,10 +256,26 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '10px',
+    padding: 8,
+    border: '1px solid',
+    borderRadius: '10px'
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'flex-end', // Alinha os botões à direita
+  },
+  title: {
+    flexGrow: 1,                     // Ocupa o máximo de espaço disponível
+    textAlign: 'center',             // Centraliza o título
+    fontSize: '24px',                // Tamanho da fonte do título
+    margin: 0,                       // Remove a margem padrão
+  },
+  buttonLogout: {
+    border: 'none',                  // Remove a borda padrão
+    background: 'none',              // Remove o fundo padrão
+    color: '#fff',                   // Cor do texto do botão
+    fontSize: '16px',                // Tamanho da fonte do botão
+    cursor: 'pointer',               // Cursor de ponteiro ao passar
   },
   favoritarButton: {
     marginLeft: '10px',
