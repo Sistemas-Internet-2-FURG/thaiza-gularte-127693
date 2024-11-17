@@ -65,46 +65,59 @@ function TelaInicial() {
     navigate('/login')
     )
   }
-
-
   const pegar_dados_banco = async () => {
-      const livros = await buscar_livros()
+    try {
+      // Buscar livros
+      const livros = await buscar_livros();
       if (livros && livros.code === 200) {
-          setLivros(livros.dados)
+        setLivros(livros.dados);
       } else {
-          console.error('Erro ao listar livros:', livros.msg)
+        console.error("Erro ao listar livros:", livros?.msg || "Resposta inválida");
       }
-
-      const coms = await buscar_comentarios()
+  
+      // Buscar comentários
+      const coms = await buscar_comentarios();
       if (coms && coms.code === 200) {
-          setComentarios(coms.dados)
+        setComentarios(coms.dados);
       } else {
-          console.error('Erro ao listar coms:', coms)
+        console.error("Erro ao listar comentários:", coms?.msg || "Resposta inválida");
       }
-
+  
+      // Buscar favoritos
       const favoritosResponse = await buscar_favoritos();
       if (favoritosResponse && favoritosResponse.code === 200) {
         try {
-          // Usando `Promise.all` para buscar os detalhes de cada livro favorito em paralelo
+          // Filtrar favoritos apenas do usuário atual
+          const favoritosFiltrados = favoritosResponse.dados.filter(
+            (fav) => fav.livro_id === usuario[0] // Corrigido para verificar usuario_id
+          );
+  
+          // Buscar detalhes dos livros favoritos em paralelo
           const favs = await Promise.all(
-            favoritosResponse.dados.map(async (fav) => {
-              const livroResponse = await buscar_livro_id(fav.usuario_id);
+            favoritosFiltrados.map(async (fav) => {
+              const livroResponse = await buscar_livro_id(fav.usuario_id); // Corrigido para buscar livro_id
               return {
                 usuario: fav.livro_id,
-                titulo: livroResponse.data.dados[1],
+                titulo: livroResponse?.data?.dados?.[1] || "Título não encontrado", // Evita erro de acesso
               };
             })
           );
-          setFavoritos(favs); // Atualiza o estado com a lista completa de favoritos
+  
+          setFavoritos(favs);
         } catch (error) {
-          console.error('Erro ao buscar detalhes dos favoritos:', error);
+          console.error("Erro ao buscar detalhes dos favoritos:", error);
         }
       } else {
-        console.error('Erro ao listar favoritos:', favoritosResponse);
+        console.error(
+          "Erro ao listar favoritos:",
+          favoritosResponse?.msg || "Resposta inválida"
+        );
       }
-
+    } catch (error) {
+      console.error("Erro ao buscar dados do banco:", error);
+    }
   };
-
+  
   const [showHeart, setShowHeart] = useState(false);
 
   // Função que remove o coração após a animação
