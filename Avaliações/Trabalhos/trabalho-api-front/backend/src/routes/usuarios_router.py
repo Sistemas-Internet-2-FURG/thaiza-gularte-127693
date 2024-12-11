@@ -132,3 +132,46 @@ def buscar_usuario_id(id):
         conn.close()
         return
 
+
+@usuarios_bp.route('/verificar_email', methods=['POST'])
+def verificar_email():
+    # Obtém o JSON da requisição
+    dados = request.get_json()
+    if not dados or 'email' not in dados:
+        return jsonify({"code": 400, "msg": "Email não fornecido"}), 400
+
+    email = dados.get('email')
+
+    conn = sqlite3.connect('db_letter.db')
+    cursor = conn.cursor()
+
+    try:
+        # Busca o usuário pelo email
+        cursor.execute('''
+            SELECT senha FROM usuarios WHERE email = ? 
+        ''', (email,))
+        usuario = cursor.fetchone()
+
+        # Verifica se encontrou o usuário
+        if usuario:
+            return jsonify({
+                "code": 200,
+                "senha": usuario[0],  # `usuario[0]` contém a senha do banco
+                "msg": "Usuário encontrado"
+            }), 200
+        else:
+            return jsonify({
+                "code": 404,
+                "senha": '',
+                "msg": "Usuário não encontrado"
+            }), 404
+
+    except sqlite3.Error as e:
+        print(f"Erro ao acessar o banco de dados: {e}")
+        return jsonify({
+            "code": 500,
+            "msg": "Erro ao acessar banco de dados"
+        }), 500
+
+    finally:
+        conn.close()

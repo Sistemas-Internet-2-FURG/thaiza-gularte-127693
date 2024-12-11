@@ -226,13 +226,14 @@ function TelaInicial() {
 const styles = {
   body: {
     fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#121212',
-    color: '#ffffff',
+    backgroundColor: '#ccd0cf',
+    color: '#06141b',
     margin: 0,
     padding: 0,
   },
   header: {
-    backgroundColor: '#6a1b9a',
+    backgroundColor: '#4a5c6a',
+    color: '#ccd0cf',
     display: 'flex',
     justifyContent: 'space-between', // Empurra o conteúdo para os extremos
     alignItems: 'center',            // Alinha verticalmente no centro
@@ -250,13 +251,15 @@ const styles = {
     flex: 1,
   },
   favorites: {
-    backgroundColor: '#3f51b5',
+    backgroundColor: '#253745',
+    color: '#ccd0cf',
     marginBottom: '20px',
     padding: '15px',
     borderRadius: '5px',
   },
   comments: {
-    backgroundColor: '#3f51b5',
+    backgroundColor: '#253745',
+    color: '#ccd0cf',
     padding: '15px',
     borderRadius: '5px',
   },
@@ -293,7 +296,7 @@ const styles = {
   favoritarButton: {
     marginLeft: '10px',
     padding: '5px 10px',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#253745',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
@@ -329,7 +332,7 @@ const styles = {
     justifyContent: 'space-between',
   },
   submitButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#253745',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
